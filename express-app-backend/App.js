@@ -14,6 +14,7 @@ import {
 const app = express();
 const PORT = 4000;
 const map_profile = new Map();
+const map_product = new Map();
 
 /**
  *
@@ -29,6 +30,18 @@ const helper_Create_Profile_And_Add_To_MapProfile = (req) => {
   });
 };
 
+const helper_Create_Product_And_Add_To_MapProduct = (req) => {
+  map_product.set(req.body.id, {
+    id: req.body.id,
+    name: req.body.name,
+    quantity: req.body.quantity,
+    description: req.body.description,
+    commodity_category: req.body.commodity_category,
+    sub_category: req.body.sub_category,
+    commodity_product: req.body.commodity_product,
+  });
+};
+
 const debug_show_Map_Profile_size = (input_text = "") => {
   console.log(`${input_text}map_profile.size = ${map_profile.size}`);
 };
@@ -39,6 +52,10 @@ const debug_show_request_path = (input_text = "") => {
 
 const debug_print_Map_Profile = (input_text = "") => {
   console.log(`${input_text}map_profile = `, map_profile);
+};
+
+const debug_print_Map_Product = (input_text = "") => {
+  console.log(`${input_text}map_product = `, map_product);
 };
 
 app.use(express.urlencoded({ extended: true }));
@@ -98,10 +115,16 @@ app
   });
 
 app
-  .route("/product")
+  .route("/products")
   //get
   .get((req, res) => {
-    res.send(`get request sucessfully on port ${PORT}`);
+    if (map_product) {
+      debug_print_Map_Product("/product get - ");
+      res.send(map_product);
+      // res.send({ status: "200", message: "Successfully get products" });
+    } else {
+      res.send({ status: "300", message: "Failed to get products" });
+    }
   });
 
 app
@@ -112,15 +135,34 @@ app
   })
   //post
   .post((req, res) => {
-    res.send(`post request sucessfully on port ${PORT}`);
+    if (map_product.has(req.body.id) === false) {
+      helper_Create_Product_And_Add_To_MapProduct(req);
+      debug_print_Map_Product("/product/:id post - ");
+      res.send({ status: "200", message: "Successfully post product" });
+    } else {
+      res.send({ status: "300", message: "Failed to post product" });
+    }
   })
   //put
   .put((req, res) => {
-    res.send(`put request sucessfully on port ${PORT}`);
+    if (map_product.has(req.body.id) === true) {
+      map_product.delete(req.body.id);
+      helper_Create_Product_And_Add_To_MapProduct(req);
+      debug_print_Map_Product("/product/:id put - ");
+      res.send({ status: "200", message: "Successfully put product" });
+    } else {
+      res.send({ status: "300", message: "Failed to put product" });
+    }
   })
   //delete
   .delete((req, res) => {
-    res.send(`delete request sucessfully on port ${PORT}`);
+    if (map_product.has(req.body.id) === true) {
+      map_product.delete(req.body.id);
+      debug_print_Map_Product("/product/:id delete - ");
+      res.send({ status: "200", message: "Successfully delete product" });
+    } else {
+      res.send({ status: "300", message: "Failed to delete product" });
+    }
   });
 
 /*-------------------------------------------------------------
