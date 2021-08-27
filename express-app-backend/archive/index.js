@@ -1,5 +1,5 @@
 import express from "express";
-import data from "./data/MOCK_DATA.json";
+import data from "../data/MOCK_DATA.json";
 import favicon from "serve-favicon";
 import path from "path";
 
