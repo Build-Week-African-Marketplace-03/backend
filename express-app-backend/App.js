@@ -30,6 +30,10 @@ const helper_Create_Profile_And_Add_To_MapProfile = (req) => {
   });
 };
 
+/**
+ *
+ * @param {id, name, quanity, description, commodity_category, sub_category, commodity_product} req
+ */
 const helper_Create_Product_And_Add_To_MapProduct = (req) => {
   map_product.set(req.body.id, {
     id: req.body.id,
@@ -97,6 +101,7 @@ app
   //get
   .get((req, res) => {
     if (map_profile.has(req.params.id)) {
+      debug_print_Map_Profile("/profile/:id get - ");
       res.json(map_profile.get(req.params.id));
     } else {
       res.send({ status: "300", message: "Failed to retrieve profile" });
